@@ -1,0 +1,872 @@
+/* =========================================================
+   Theme tokens: everything below follows the active SillyTavern theme
+   (User Settings > UI Theme). Only these lines map to ST variables.
+   ========================================================= */
+:root {
+    --cp-text: var(--SmartThemeBodyColor);
+    --cp-muted: color-mix(in srgb, var(--SmartThemeBodyColor) 60%, transparent);
+    --cp-border: var(--cp-border);
+    --cp-surface: var(--SmartThemeBlurTintColor);
+    --cp-input-bg: var(--black30a);
+    --cp-hover: color-mix(in srgb, var(--SmartThemeBodyColor) 10%, transparent);
+    --cp-divider: color-mix(in srgb, var(--SmartThemeBodyColor) 20%, transparent);
+    --cp-accent: var(--SmartThemeQuoteColor);
+    --cp-accent-soft: color-mix(in srgb, var(--SmartThemeQuoteColor) 18%, transparent);
+    --cp-accent-line: color-mix(in srgb, var(--SmartThemeQuoteColor) 55%, transparent);
+    --cp-danger: var(--warning);
+    --cp-danger-soft: color-mix(in srgb, var(--warning) 15%, transparent);
+    --cp-danger-line: color-mix(in srgb, var(--warning) 55%, transparent);
+    --cp-shadow: var(--SmartThemeShadowColor);
+}
+
+.hidden {
+    display: none !important;
+}
+
+.icon-slash-overlay {
+  position: relative;
+  display: inline-block;
+}
+.icon-slash-overlay::after {
+    content: "";
+    position: absolute;
+    left: 40%;
+    top: 0;
+    width: 15%;
+    height: 100%;
+    background: var(--SmartThemeBodyColor);
+    transform: rotate(-45deg);
+    pointer-events: none;
+}
+
+/* Collapsible section: always take full width, do not shrink, and keep order */
+.collapsible-section {
+    width: 100%;
+    min-width: 0;
+    flex: 0 0 auto;
+    border-radius: 8px;
+    box-shadow: 0 1px 4px var(--cp-shadow);
+    overflow: hidden;
+    transition: box-shadow 0.2s;
+    min-height: 48px;
+    padding-left: 24px;
+}
+
+.collapsible-section:not(.collapsed) {
+    box-shadow: 0 2px 8px 0 var(--cp-shadow);
+}
+
+.collapsible-header {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-weight: 600;
+    padding: 8px;
+    user-select: none;
+    border-bottom: 1px solid var(--cp-divider);
+    gap: 8px;
+    width: 100%;
+    min-width: 0;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    margin-top: 5px;
+}
+.collapsible-header .chevron {
+    transition: transform 0.2s;
+    margin-right: 4px;
+    font-size: 1.1em;
+    min-width: 16px;
+    width: 16px;
+}
+.collapsible-header.collapsed .chevron {
+    transform: rotate(-90deg);
+}
+.collapsible-header .folder-title {
+    flex-grow: 1;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.collapsible-content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 100%;
+    min-width: 0;
+    overflow: hidden;
+    padding-top: 6px;
+    transition: max-height 0.2s, opacity 0.2s;
+}
+.collapsible-content.collapsed {
+    display: none;
+}
+
+.emptyFolderMessage {
+    margin-left: 43px;
+    opacity: 0.6;
+    font-size: calc(var(--mainFontSize) * 0.9);
+    color: var(--cp-text);
+    text-align: left;
+}
+
+.removeFolderBtn {
+    background: none !important;
+    border: none;
+    color: var(--cp-danger);
+    margin-left: 8px;
+    padding: 2px 8px;
+    font-size: 1.1em;
+    cursor: pointer;
+    opacity: 0.7;
+    vertical-align: middle;
+    border-radius: 4px;
+    transition: background 0.15s, opacity 0.2s, color 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.removeFolderBtn:hover {
+    background: var(--cp-danger-soft);
+    color: var(--cp-danger);
+    opacity: 1;
+}
+
+.icon-grey {
+    color: var(--cp-muted) !important;
+    opacity: 0.7;
+}
+
+.addFolderBtn {
+    background: none;
+    border: 1px dashed var(--cp-border);
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-left: auto;
+    margin-right: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding: 2px 8px;
+    opacity: 0.7;
+    transition: opacity 0.2s, background 0.15s;
+    align-self: flex-end;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.add-folder-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+    padding: 8px 8px 4px 8px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.add-folder-btn, .settings-action-btn {
+    background: none;
+    border: 1.5px dashed var(--cp-border);
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.95em;
+    font-weight: 500;
+    padding: 0 8px;
+    height: 26px;
+    min-width: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--cp-text);
+    opacity: 0.8;
+    transition: all 0.5s ease;
+    box-shadow: none;
+}
+.add-folder-btn:hover, .settings-action-btn:hover {
+    background: var(--cp-hover);
+    color: var(--cp-text);
+    opacity: 1;
+    border-color: var(--cp-text);
+}
+
+.settings-action-btn {
+    margin: 0 2px;
+    min-width: 0;
+    font-size: 0.95em;
+    height: 26px;
+    padding: 0 10px;
+    border-width: 1px;
+}
+
+/* Tab item styles (formerly Sidebar item styles) */
+.tabItem {
+    display: flex;
+    flex-direction: row;
+    transition: filter 0.2s;
+    padding: 5px 10px;
+    border-radius: 10px;
+    cursor: pointer;
+    gap: 2px;
+    border: 1px solid var(--cp-border);
+}
+.tabItem.selected {
+    background-color: var(--cp-accent-soft);
+}
+.tabItem:hover {
+    background-color: var(--cp-hover);
+}
+.tabItem.pinned {
+    background: color-mix(in srgb, var(--SmartThemeQuoteColor) 8%, transparent);
+}
+
+.pinBtn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: all 0.3s ease;
+}
+.pinBtn:hover {
+    opacity: 1;
+    color: var(--SmartThemeQuoteColor);
+}
+
+.tabItem-root {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    box-sizing: border-box;
+    margin: 5px 0;
+    transition: all 0.5s ease;
+}
+.tabItem-previewImg {
+    width: 32px;
+    height: 32px;
+    object-fit: cover;
+    border-radius: 6px;
+    flex-shrink: 0;
+    flex: 0 0 32px;
+}
+.tabItem-singleline .tabItem-previewImg {
+    width: 24px;
+    height: 24px;
+    min-width: 24px;
+    min-height: 24px;
+    max-width: 24px;
+    max-height: 24px;
+    object-fit: cover;
+    border-radius: 5px;
+    align-self: center;
+}
+.tabItem-singleline .tabItem-nameRow {
+    font-size: calc(var(--mainFontSize) * 0.95);
+    text-align: left;
+}
+.tabItem-infoContainer {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-width: 0;
+    width: 100%;
+}
+.tabItem-nameRow {
+    width: 100%;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: center;
+}
+.tabItem-bottomRow {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    margin: 1px 0;
+}
+.tabItem-message {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex: 1 1 0;
+    min-width: 0;
+    font-size: calc(var(--mainFontSize) * 0.9);
+    opacity: 0.8;
+}
+.tabItem-pinBtn {
+    align-self: flex-end;
+}
+
+.filter-row {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin: 8px 4px 12px 4px;
+}
+.filter-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.filter-input {
+    width: 100%;
+    padding: 6px 10px;
+    font-size: 1em;
+    background-color: var(--cp-input-bg);
+    border: 1px solid var(--cp-border);
+    border-radius: 5px;
+    color: var(--cp-text);
+    margin-right: 8px;
+    padding-right: 30px; /* Make room for the clear button */
+}
+
+.filter-clear-button {
+    display: none;
+    position: absolute;
+    right: 15px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    color: var(--cp-muted);
+    font-size: 14px;
+    z-index: 10; /* Ensure it's on top */
+}
+
+.filter-clear-button:hover {
+    color: var(--cp-text);
+}
+
+.filter-clear-button:focus {
+    outline: none;
+    color: var(--cp-text);
+}
+
+.allChatsTabLoader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.allChatsDateSeparator {
+    font-weight: 600;
+    font-size: calc(var(--mainFontSize) * 1.05);
+    margin: 8px 0 2px 0;
+    padding: 4px 10px 2px 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    border-radius: 0;
+}
+
+.allChatsDateSeparator:first-of-type {
+    margin-top: 16px;
+}
+.allChatsDateSeparator button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1em;
+    margin-left: 4px;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+.allChatsDateSeparator button:hover {
+    opacity: 1;
+}
+
+/* Make extension tab content scrollable */
+.chatsplus-tab-content {
+    max-height: 100%;
+    overflow-y: auto;
+    min-height: 0;
+}
+
+/* Extension tab buttons styling - unified look, no special active state */
+.chatsplus-tabs-container {
+    width: 100%;
+    display: flex;
+    flex-wrap: nowrap;
+    flex-shrink: 0;
+    overflow-x: auto;
+    gap: 8px;
+    margin-bottom: 8px;
+    padding: 0;
+    background: none;
+    border: none;
+    box-sizing: border-box;
+    border-bottom: 1px solid var(--cp-divider);
+}
+.chatsplus-tab {
+    flex: 1 1 0;
+    min-width: 0;
+    background: none;
+    border: none;
+    border-radius: 0;
+    color: inherit;
+    font-weight: 500;
+    font-size: 1em;
+    padding: 8px 0;
+    cursor: pointer;
+    outline: none;
+    transition: all 0.5s ease;
+    box-shadow: none;
+    margin: 0;
+    position: relative;
+    z-index: 2;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    opacity: 0.7;
+    border-bottom: 1px solid transparent;
+}
+.chatsplus-tab:hover {
+    color: var(--cp-text);
+    opacity: 0.9;
+}
+.chatsplus-tab.active {
+    color: var(--cp-text);
+    border-bottom: 1px solid var(--cp-text);
+    z-index: 3;
+    opacity: 1;
+}
+
+.pin-popup-content {
+    max-height: 100%;
+    height: 100%;
+
+}
+.chatplus_radio_group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-height: 100%;
+    padding-bottom: 20px;
+    overflow-y: auto;
+    padding-right: 4px;
+    background: var(--cp-surface);
+}
+.chatplus_menu_label {
+    display: block;
+    margin: 8px 0 2px 0;
+}
+.chatplus_menu_input {
+    width: 100%;
+    margin-bottom: 8px;
+    background-color: var(--cp-input-bg);
+    border: 1px solid var(--cp-border);
+    border-radius: 5px;
+    padding: 5px 10px;
+    color: var(--cp-text);
+}
+
+.pin-popup-chat-preview {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.load-more-btn {
+    width: 100%;
+    margin: 16px auto 0 auto;
+    padding: 8px 24px;
+    font-size: 1em;
+    background: var(--cp-surface);
+    color: var(--cp-text);
+    border: 1px solid var(--cp-border);
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+/* ---------- ChatsPlus mod: action buttons next to the filter ---------- */
+.filter-row {
+    gap: 6px;
+}
+.filter-row .filter-input-wrapper {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+.chatsplus-action-btn {
+    flex: 0 0 auto;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    border: 1px solid var(--cp-border);
+    background: var(--cp-surface);
+    color: var(--cp-text);
+    cursor: pointer;
+    opacity: 0.8;
+    transition: opacity 0.15s, background-color 0.15s;
+}
+.chatsplus-action-btn:hover {
+    opacity: 1;
+}
+.chatsplus-action-btn.chatsplus-danger:hover {
+    background: var(--cp-danger-soft);
+    border-color: var(--cp-danger-line);
+    color: var(--cp-danger);
+}
+
+/* ---------- Bulk delete popup ---------- */
+.chatsplus-bulk {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+    max-height: 72vh;
+    text-align: left;
+}
+.chatsplus-bulk h3 {
+    margin: 0;
+}
+.chatsplus-bulk-hint {
+    font-size: 0.9em;
+    opacity: 0.75;
+}
+.chatsplus-bulk-filter {
+    width: 100%;
+    margin: 0;
+}
+.chatsplus-bulk-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+.chatsplus-bulk-toolbar .menu_button {
+    margin: 0;
+    padding: 4px 10px;
+    width: auto;
+}
+.chatsplus-bulk-count {
+    margin-left: auto;
+    font-size: 0.9em;
+    font-weight: bold;
+}
+.chatsplus-bulk-list {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    min-height: 120px;
+    max-height: 50vh;
+    border: 1px solid var(--cp-border);
+    border-radius: 6px;
+    padding: 4px;
+}
+.chatsplus-bulk-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 8px;
+    border-radius: 6px;
+    border: 1px solid transparent;
+    cursor: pointer;
+}
+.chatsplus-bulk-row:hover {
+    background: var(--cp-hover);
+}
+.chatsplus-bulk-row.selected {
+    background: var(--cp-danger-soft);
+    border-color: var(--cp-danger-line);
+}
+.chatsplus-bulk-row.locked {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+.chatsplus-bulk-row input[type=checkbox] {
+    flex: 0 0 auto;
+    margin: 0;
+}
+.chatsplus-bulk-row .tabItem-previewImg {
+    flex: 0 0 32px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+.chatsplus-bulk-info {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+.chatsplus-bulk-name,
+.chatsplus-bulk-preview {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.chatsplus-bulk-name {
+    font-weight: 600;
+}
+.chatsplus-bulk-meta {
+    font-size: 0.8em;
+    opacity: 0.7;
+}
+.chatsplus-bulk-preview {
+    font-size: 0.85em;
+    opacity: 0.6;
+}
+.chatsplus-bulk-loader,
+.chatsplus-bulk-empty {
+    text-align: center;
+    padding: 24px;
+    opacity: 0.8;
+}
+.chatsplus-bulk-more {
+    width: 100%;
+    margin: 6px 0 2px 0;
+}
+.chatsplus-bulk-warn {
+    color: var(--cp-danger);
+    margin: 4px 0 8px 0;
+}
+.chatsplus-bulk-confirm-list {
+    text-align: left;
+    max-height: 40vh;
+    overflow-y: auto;
+    margin: 0;
+    padding-left: 20px;
+    font-size: 0.9em;
+}
+
+/* ---------- Theme helpers ---------- */
+.chatsplus-muted-note {
+    font-size: 0.9em;
+    color: var(--cp-muted);
+    margin: 4px 0 8px 4px;
+}
+.chatsplus-settings-btn {
+    width: auto;
+    margin: 0;
+    padding: 4px 14px;
+}
+.chatsplus-danger-text {
+    color: var(--cp-danger) !important;
+}
+
+/* ---------- Folder management ---------- */
+.chatsplus-folder-icon {
+    color: var(--cp-accent);
+    flex: 0 0 auto;
+}
+.chatsplus-folder-count {
+    flex: 0 0 auto;
+    font-size: 0.8em;
+    font-weight: normal;
+    line-height: 1;
+    padding: 2px 7px;
+    border-radius: 10px;
+    color: var(--cp-muted);
+    background: var(--cp-hover);
+    border: 1px solid var(--cp-border);
+}
+.collapsible-header .folder-title {
+    flex: 0 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.collapsible-header .chatsplus-folder-menu-btn {
+    margin-left: auto;
+}
+.add-folder-row .chatsplus-folder-options-btn {
+    margin-left: auto;
+    width: 28px;
+    height: 26px;
+}
+.add-folder-row {
+    border-radius: 6px;
+    border: 1px dashed transparent;
+}
+
+/* Drag & drop feedback (theme accent color) */
+.chatsplus-dragging {
+    opacity: 0.45;
+}
+.chatsplus-drop-into {
+    background: var(--cp-accent-soft) !important;
+    outline: 1px dashed var(--cp-accent-line);
+    outline-offset: -1px;
+}
+.chatsplus-drop-before {
+    box-shadow: inset 0 2px 0 0 var(--cp-accent) !important;
+}
+.chatsplus-drop-after {
+    box-shadow: inset 0 -2px 0 0 var(--cp-accent) !important;
+}
+
+/* Folder menu popup */
+.chatsplus-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    text-align: left;
+    min-width: min(320px, 80vw);
+}
+.chatsplus-menu h3 {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.chatsplus-menu h3 .fa-folder {
+    color: var(--cp-accent);
+}
+.chatsplus-menu-section {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding-top: 8px;
+    border-top: 1px solid var(--cp-divider);
+}
+.chatsplus-menu-item {
+    display: flex !important;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px;
+    width: 100%;
+    margin: 0;
+    padding: 6px 10px;
+    text-align: left;
+}
+.chatsplus-menu-item i {
+    width: 18px;
+    text-align: center;
+    opacity: 0.85;
+}
+.chatsplus-menu-item.disabled,
+.chatsplus-menu-item:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+.chatsplus-menu-danger {
+    color: var(--cp-danger);
+}
+.chatsplus-menu-danger:hover {
+    background: var(--cp-danger-soft);
+}
+
+/* Folder picker / options */
+.chatsplus-picker,
+.chatsplus-options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    text-align: left;
+}
+.chatsplus-folder-radios {
+    max-height: 50vh;
+    padding: 6px;
+    border: 1px solid var(--cp-border);
+    border-radius: 6px;
+}
+.chatsplus-radio-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 6px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.chatsplus-radio-row:hover {
+    background: var(--cp-hover);
+}
+.chatsplus-radio-row.disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+.chatsplus-radio-row .fa-folder {
+    color: var(--cp-accent);
+}
+.chatsplus-option-group {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 8px 0;
+    border-top: 1px solid var(--cp-divider);
+}
+.chatsplus-option-title {
+    font-weight: 600;
+    margin-bottom: 2px;
+}
+.chatsplus-options .menu_button.active {
+    background: var(--cp-accent-soft);
+    border-color: var(--cp-accent-line);
+}
+
+/* Color picker */
+.chatsplus-color-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 6px;
+    margin: 8px 0;
+}
+.chatsplus-color-swatch {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 8px;
+    border-radius: 6px;
+    border: 1px solid var(--cp-border);
+    background: var(--cp-surface);
+    color: var(--cp-text);
+    cursor: pointer;
+    text-align: left;
+}
+.chatsplus-color-swatch .fa-folder {
+    color: var(--cp-accent);
+    font-size: 1.1em;
+}
+.chatsplus-color-swatch:hover {
+    background: var(--cp-hover);
+}
+.chatsplus-color-swatch.active {
+    border-color: var(--cp-accent);
+    box-shadow: 0 0 0 1px var(--cp-accent);
+}
+.chatsplus-color-custom {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+}
+.chatsplus-color-custom input[type=color] {
+    width: 36px;
+    height: 28px;
+    padding: 0;
+    border: 1px solid var(--cp-border);
+    border-radius: 5px;
+    background: none;
+}
+
+/* Folder bulk actions */
+.chatsplus-bulk-row-accent.selected {
+    background: var(--cp-accent-soft);
+    border-color: var(--cp-accent-line);
+}
+.chatsplus-bulk-actions {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 6px;
+}
+.chatsplus-bulk-actions .menu_button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
