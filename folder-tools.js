@@ -6,6 +6,7 @@
 // drag & drop. All colors come from the active SillyTavern theme (see style.css).
 
 import { Popup, POPUP_TYPE, POPUP_RESULT } from '../../../popup.js';
+import { fillChatName } from './ui-helpers.js';
 import { deleteChatsFlow, isCurrentChat, makeAvatar } from './bulk-delete.js';
 import { loadChats, peekChats } from './chat-store.js';
 
@@ -577,7 +578,7 @@ export async function openFolderBulk(folder) {
         info.className = 'chatsplus-bulk-info';
         const name = document.createElement('div');
         name.className = 'chatsplus-bulk-name';
-        name.textContent = `${chat.isGroup ? '👥 ' : ''}${chat.character}: ${chat.file_name}`;
+        fillChatName(name, chat);
         info.appendChild(name);
         if (chat.stat && chat.stat.mes) {
             const pv = document.createElement('div');

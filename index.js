@@ -8,7 +8,9 @@ import { Popup, POPUP_TYPE, POPUP_RESULT } from '../../../popup.js';
 import { timestampToMoment } from '../../../utils.js';
 import { deleteAttachment } from '../../../chats.js';
 import { extension_settings } from '../../../extensions.js';
-import { t } from '../../../i18n.js';
+import { t as stTranslate } from '../../../i18n.js';
+import { KO_STRINGS } from './i18n-ko.js';
+import { fillChatName, formatDateHeader, formatShortTime, formatFullDateTime } from './ui-helpers.js';
 import { initChatStore, loadChats, peekChats, markStale, onStale, setPinnedProvider, getGeneration, isStale, forgetChats, mapLimit } from './chat-store.js';
 import { runBulkDelete } from './bulk-delete.js';
 import {
@@ -27,6 +29,17 @@ const {
     eventSource
 } = SillyTavern.getContext();
 const MODULE_NAME = 'chatsPlus';
+
+/**
+ * Korean UI text. Every t`...` in this file goes through here first;
+ * anything not in the table falls back to SillyTavern's own translation.
+ */
+function t(strings, ...values) {
+    const key = strings.join('\u0000');
+    const ko = KO_STRINGS[key];
+    if (ko !== undefined) return values.length ? ko.split('\u0000').reduce((acc, part, i) => acc + values[i - 1] + part) : ko;
+    return stTranslate(strings, ...values);
+}
 const defaultSettings = {
     pinnedChats: [],
 };
@@ -269,7 +282,7 @@ async function promptSelectFolderOrPinned(chat) {
                         const group = groups.find(g => g.id === chatObj.characterId);
                         if (group) {
                             isGroup = true;
-                            char = { name: group.name || `Group ${group.id}`, avatar: group.avatar || '' };
+                            char = { name: group.name || `그룹 ${group.id}`, avatar: group.avatar || '' };
                         }
                     }
                     const chat = {
@@ -319,7 +332,7 @@ async function promptSelectFolderOrPinned(chat) {
                     }
                     const nameRow = document.createElement('div');
                     nameRow.className = 'tabItem-nameRow';
-                    nameRow.textContent = `${chat.character}: ${chat.file_name}`;
+                    fillChatName(nameRow, chat);
                     tabItem.appendChild(previewImg);
                     tabItem.appendChild(nameRow);
                     previewContainer.appendChild(tabItem);
@@ -327,7 +340,7 @@ async function promptSelectFolderOrPinned(chat) {
                 if (folderChats.length > 3) {
                     const more = document.createElement('div');
                     more.className = 'chatsplus-muted-note';
-                    more.textContent = `+${folderChats.length - 3} more`;
+                    more.textContent = `외 ${folderChats.length - 3}개`;
                     previewContainer.appendChild(more);
                 }
                 container.appendChild(previewContainer);
@@ -382,7 +395,7 @@ async function promptSelectFolderOrPinned(chat) {
 
     const nameRow = document.createElement('div');
     nameRow.className = 'tabItem-nameRow';
-    nameRow.textContent = `${chat.character}: ${chat.file_name}`;
+    fillChatName(nameRow, chat);
     tabItem.appendChild(previewImg);
     tabItem.appendChild(nameRow);
     previewContainer.appendChild(tabItem);
@@ -425,7 +438,7 @@ async function promptSelectFolderOrPinned(chat) {
                 const group = groups.find(g => g.id === chatObj.characterId);
                 if (group) {
                     isGroup = true;
-                    char = { name: group.name || `Group ${group.id}`, avatar: group.avatar || '' };
+                    char = { name: group.name || `그룹 ${group.id}`, avatar: group.avatar || '' };
                 }
             }
 
@@ -471,7 +484,7 @@ async function promptSelectFolderOrPinned(chat) {
 
             const nameRow = document.createElement('div');
             nameRow.className = 'tabItem-nameRow';
-            nameRow.textContent = `${chat.character}: ${chat.file_name}`;
+            fillChatName(nameRow, chat);
             tabItem.appendChild(previewImg);
             tabItem.appendChild(nameRow);
             pinnedPreviewContainer.appendChild(tabItem);
@@ -619,7 +632,7 @@ async function renderAllChatsInRecentChatsTab() {
 
     const filterInput = document.createElement('input');
     filterInput.type = 'text';
-    filterInput.placeholder = 'Filter chats...';
+    filterInput.placeholder = '캐릭터, 채팅 이름, 마지막 메시지로 찾기';
     filterInput.className = 'filter-input';
     filterInput.style.paddingRight = '30px'; // Make room for the clear button
 
@@ -627,7 +640,7 @@ async function renderAllChatsInRecentChatsTab() {
     const clearButton = document.createElement('button');
     clearButton.className = 'filter-clear-button';
     clearButton.innerHTML = '<i class="fa-solid fa-xmark"></i>';
-    clearButton.title = 'Clear filter';
+    clearButton.title = '검색어 지우기';
 
     inputWrapper.appendChild(filterInput);
     inputWrapper.appendChild(clearButton);
@@ -661,7 +674,7 @@ async function renderAllChatsInRecentChatsTab() {
     loadMoreBtn.id = 'extensionAllChatsTabLoadMoreBtn';
     loadMoreBtn.classList.add('load-more-btn');
     loadMoreBtn.classList.add('hidden'); // Initially hidden
-    loadMoreBtn.textContent = 'Load More';
+    loadMoreBtn.textContent = '더 불러오기';
     container.appendChild(loadMoreBtn);
     // Filtering and pagination logic
     let lastFilter = '';
@@ -833,7 +846,7 @@ async function populateAllChatsTab({ container, loader, tab, filter = '', offset
             if (!char) {
                 const group = groupsMap[pinned.characterId];
                 chatInfo = {
-                    character: group ? (group.name || `Group ${group.id}`) : pinned.characterId,
+                    character: group ? (group.name || `그룹 ${group.id}`) : pinned.characterId,
                     avatar: group ? (group.avatar || '') : '',
                     file_name: pinned.file_name,
                     characterId: pinned.characterId,
@@ -897,7 +910,7 @@ async function populateAllChatsTab({ container, loader, tab, filter = '', offset
             lastDate = chatDateStr;
             const dateSeparator = document.createElement('div');
             dateSeparator.className = 'allChatsDateSeparator';
-            dateSeparator.textContent = chatMoment ? chatMoment.format('LL') : '';
+            dateSeparator.textContent = chat.last_mes ? formatDateHeader(chat.last_mes) : '';
             dateSeparator.setAttribute('data-date', chatDateStr); // For tracking
             target.appendChild(dateSeparator);
         }
@@ -995,7 +1008,7 @@ function renderAllChatsFoldersUI(container, folderedChats, folderNodes, level = 
         // Helper function to show the rename folder popup
         async function showRenameFolderPopup(folder) {
             const content = document.createElement('div');
-            content.innerHTML = `<h3>Rename folder</h3>`;
+            content.innerHTML = `<h3>폴더 이름 바꾸기</h3>`;
             const nameInput = document.createElement('input');
             nameInput.type = 'text';
             nameInput.value = folder.name;
@@ -1031,7 +1044,8 @@ function renderAllChatsFoldersUI(container, folderedChats, folderNodes, level = 
         // Helper function to show the add chats to folder popup
         async function showAddChatsToFolderPopup(folder) {
             const content = document.createElement('div');
-            content.innerHTML = `<h3>Add Chats to "${folder.name}"</h3>`;
+            content.innerHTML = '<h3></h3>';
+            content.querySelector('h3').textContent = `"${folder.name}" 폴더에 채팅 넣기`;
             content.style.width = '100%';
             content.style.maxHeight = '70vh';
             content.style.overflow = 'hidden';
@@ -1051,7 +1065,7 @@ function renderAllChatsFoldersUI(container, folderedChats, folderNodes, level = 
 
             const filterInput = document.createElement('input');
             filterInput.type = 'text';
-            filterInput.placeholder = 'Filter chats...';
+            filterInput.placeholder = '캐릭터, 채팅 이름, 마지막 메시지로 찾기';
             filterInput.className = 'filter-input chatplus_menu_input';
             filterInput.style.paddingRight = '30px';
             filterInput.style.width = '100%';
@@ -1059,7 +1073,7 @@ function renderAllChatsFoldersUI(container, folderedChats, folderNodes, level = 
             const clearButton = document.createElement('button');
             clearButton.className = 'filter-clear-button';
             clearButton.innerHTML = '<i class="fa-solid fa-xmark"></i>';
-            clearButton.title = 'Clear filter';
+            clearButton.title = '검색어 지우기';
             clearButton.style.position = 'absolute';
             clearButton.style.right = '5px';
             clearButton.style.background = 'none';
@@ -1083,7 +1097,7 @@ function renderAllChatsFoldersUI(container, folderedChats, folderNodes, level = 
             selectedCount.style.marginLeft = 'auto';
             selectedCount.style.fontSize = '0.9em';
             selectedCount.style.color = 'var(--cp-muted)';
-            selectedCount.textContent = '0 selected';
+            selectedCount.textContent = '0개 선택됨';
 
             selectionControls.appendChild(selectedCount);
             content.appendChild(selectionControls);
@@ -1165,7 +1179,7 @@ function renderAllChatsFoldersUI(container, folderedChats, folderNodes, level = 
 
                 const nameRow = document.createElement('div');
                 nameRow.className = 'tabItem-nameRow';
-                nameRow.textContent = `${chat.character}: ${chat.file_name}`;
+                fillChatName(nameRow, chat);
                 nameRow.style.whiteSpace = 'nowrap';
                 nameRow.style.overflow = 'hidden';
                 nameRow.style.textOverflow = 'ellipsis';
@@ -1177,7 +1191,7 @@ function renderAllChatsFoldersUI(container, folderedChats, folderNodes, level = 
                 messageRow.style.whiteSpace = 'nowrap';
                 messageRow.style.overflow = 'hidden';
                 messageRow.style.textOverflow = 'ellipsis';
-                messageRow.textContent = chat.stat && chat.stat.mes ? chat.stat.mes : 'No messages';
+                messageRow.textContent = chat.stat && chat.stat.mes ? chat.stat.mes : '메시지 없음';
 
                 chatInfo.appendChild(nameRow);
                 chatInfo.appendChild(messageRow);
@@ -1219,7 +1233,7 @@ function renderAllChatsFoldersUI(container, folderedChats, folderNodes, level = 
 
             // Function to update selected count
             function updateSelectedCount() {
-                selectedCount.textContent = `${selectedChats.size} selected`;
+                selectedCount.textContent = `${selectedChats.size}개 선택됨`;
             }
 
             // Function to populate chats
@@ -1306,10 +1320,17 @@ function renderAllChatsFoldersUI(container, folderedChats, folderNodes, level = 
 
                 // Show success message
                 const confirmContent = document.createElement('div');
-                confirmContent.innerHTML = `<h3>Success!</h3><p>Added ${addedCount} chats to "${folder.name}".</p>`;
+                const doneTitle = document.createElement('h3');
+                doneTitle.textContent = '완료!';
+                const doneText = document.createElement('p');
+                doneText.textContent = `"${folder.name}" 폴더에 채팅 ${addedCount}개를 넣었어요.`;
+                confirmContent.append(doneTitle, doneText);
                 if (addedCount !== selectedChats.size) {
                     const skipped = selectedChats.size - addedCount;
-                    confirmContent.innerHTML += `<p><small>${skipped} chats were already in the folder.</small></p>`;
+                    const skippedText = document.createElement('p');
+                    skippedText.className = 'chatsplus-muted-note';
+                    skippedText.textContent = `${skipped}개는 이미 이 폴더에 있었어요.`;
+                    confirmContent.appendChild(skippedText);
                 }
                 const confirmPopup = new Popup(confirmContent, POPUP_TYPE.TEXT, '', {
                     okButton: t`OK`
@@ -1330,7 +1351,7 @@ function renderAllChatsFoldersUI(container, folderedChats, folderNodes, level = 
         // Bookmark icon for folder bookmarking
         const bookmarkBtn = document.createElement('button');
         bookmarkBtn.className = 'bookmarkFolderBtn pinBtn tabItem-pinBtn';
-        bookmarkBtn.title = 'Add multiple chats to folder';
+        bookmarkBtn.title = '이 폴더에 채팅 여러 개 넣기';
         bookmarkBtn.innerHTML = '<i class="fa-regular fa-bookmark"></i>';
         bookmarkBtn.onclick = async (e) => {
             e.stopPropagation();
@@ -1340,7 +1361,7 @@ function renderAllChatsFoldersUI(container, folderedChats, folderNodes, level = 
 
         const removeBtn = document.createElement('button');
         removeBtn.className = 'removeFolderBtn';
-        removeBtn.title = 'Remove folder';
+        removeBtn.title = '폴더 삭제';
         removeBtn.innerHTML = '<i class="fa-solid fa-xmark icon-grey"></i>';
         removeBtn.onclick = async (e) => {
             e.stopPropagation();
@@ -1507,7 +1528,7 @@ function renderAllChatsTabItem(chat, container, isPinned, folderId) {
 
     const nameRow = document.createElement('div');
     nameRow.className = 'tabItem-nameRow';
-    nameRow.textContent = `${chat.character}: ${chat.file_name}`;
+    fillChatName(nameRow, chat);
     const pinBtn = document.createElement('button');
     pinBtn.className = 'pinBtn tabItem-pinBtn';
     if (folderId && folderId !== 'pinned') {
@@ -1583,7 +1604,7 @@ function renderAllChatsTabItem(chat, container, isPinned, folderId) {
 
             const nameRow = document.createElement('div');
             nameRow.className = 'tabItem-nameRow';
-            nameRow.textContent = `${chat.character}: ${chat.file_name}`;
+            fillChatName(nameRow, chat);
             preview.appendChild(previewImg);
             preview.appendChild(nameRow);
             // Popup content
@@ -1640,7 +1661,7 @@ function renderAllChatsTabItem(chat, container, isPinned, folderId) {
 
             const nameRow = document.createElement('div');
             nameRow.className = 'tabItem-nameRow';
-            nameRow.textContent = `${chat.character}: ${chat.file_name}`;
+            fillChatName(nameRow, chat);
             preview.appendChild(previewImg);
             preview.appendChild(nameRow);
             // Popup content
@@ -1720,22 +1741,30 @@ function renderAllChatsTabItem(chat, container, isPinned, folderId) {
     } else {
         const infoContainer = document.createElement('div');
         infoContainer.className = 'tabItem-infoContainer';
+        const topRow = document.createElement('div');
+        topRow.className = 'cp-top-row';
         const nameRow = document.createElement('div');
         nameRow.className = 'tabItem-nameRow';
-        nameRow.textContent = chat.isGroup
-            ? `👥 ${chat.character}: ${chat.file_name}`
-            : `${chat.character}: ${chat.file_name}`;
+        fillChatName(nameRow, chat);
+        topRow.appendChild(nameRow);
+        if (chat.last_mes) {
+            const timeEl = document.createElement('span');
+            timeEl.className = 'cp-time';
+            timeEl.textContent = formatShortTime(chat.last_mes);
+            timeEl.title = formatFullDateTime(chat.last_mes);
+            topRow.appendChild(timeEl);
+        }
         const bottomRow = document.createElement('div');
         bottomRow.className = 'tabItem-bottomRow';
-        // Pencil icon, first message, pin button (in this order)
-        bottomRow.appendChild(pencilIcon);
+        // Message preview first (lines up with the name), then rename and pin buttons
         const chatMessage = document.createElement('div');
         chatMessage.classList.add('chatMessage', 'tabItem-message');
         chatMessage.textContent = stat && stat.mes ? stat.mes : '';
         chatMessage.title = stat && stat.mes ? stat.mes : '';
         bottomRow.appendChild(chatMessage);
+        bottomRow.appendChild(pencilIcon);
         bottomRow.appendChild(pinBtn);
-        infoContainer.appendChild(nameRow);
+        infoContainer.appendChild(topRow);
         infoContainer.appendChild(bottomRow);
         previewImg.classList.add('tabItem-img');
         tabItem.appendChild(previewImg);
@@ -1796,7 +1825,7 @@ function renderExtensionSettings() {
     inlineDrawerToggle.append(extensionNameElement, inlineDrawerIcon);
     const inlineDrawerContent = document.createElement('div');
     inlineDrawerContent.classList.add('inline-drawer-content');
-    inlineDrawerContent.innerHTML = `<p>Enable or disable the ChatsPlus extension.</p>`;
+    inlineDrawerContent.innerHTML = `<p>ChatsPlus 확장을 켜거나 끕니다.</p>`;
     // =========================
     // Enable/Disable Checkbox
     // =========================
@@ -2024,18 +2053,18 @@ function addTabToCharManagementMenu() {
     tabRow.id = 'chatsplus-tab-row';
     tabRow.className = 'chatsplus-tabs-container';
     const charactersTabButton = document.createElement('button');
-    charactersTabButton.textContent = 'Characters';
+    charactersTabButton.textContent = '캐릭터';
     charactersTabButton.id = 'chatsplus-characters-tab-button';
     charactersTabButton.className = 'chatsplus-tab active';
     tabRow.appendChild(charactersTabButton);
     const recentChatsTabButton = document.createElement('button');
     recentChatsTabButton.id = 'chatsplus-recent-chats-tab-button';
-    recentChatsTabButton.textContent = 'Recent Chats';
+    recentChatsTabButton.textContent = '최근 채팅';
     recentChatsTabButton.className = 'chatsplus-tab';
     tabRow.appendChild(recentChatsTabButton);
     const foldersTabButton = document.createElement('button');
     foldersTabButton.id = 'chatsplus-folders-tab-button';
-    foldersTabButton.textContent = 'Folders';
+    foldersTabButton.textContent = '폴더';
     foldersTabButton.className = 'chatsplus-tab';
     tabRow.appendChild(foldersTabButton);
     charListButtonAndHotSwaps.insertAdjacentElement('afterend', tabRow);
@@ -2047,7 +2076,7 @@ function addTabToCharManagementMenu() {
     // Add a header/title
     const selectedChatHeader = document.createElement('div');
     selectedChatHeader.id = 'chatsplus-selected-chat-header';
-    selectedChatHeader.textContent = t ? t`Currently Selected Chat` : 'Currently Selected Chat';
+    selectedChatHeader.textContent = t`Currently Selected Chat`;
     selectedChatHeader.style.fontWeight = 'bold';
     selectedChatHeader.style.fontSize = '1.08em';
     selectedChatHeader.style.marginBottom = '2px';
@@ -2072,7 +2101,7 @@ function addTabToCharManagementMenu() {
             const group = groups.find(g => g.id === groupId);
             if (group) {
                 chat = {
-                    character: group.name || `Group ${groupId}`,
+                    character: group.name || `그룹 ${groupId}`,
                     avatar: group.avatar || '',
                     file_name: chatId,
                     characterId: groupId,
@@ -2128,18 +2157,18 @@ function addTabToCharManagementMenu() {
         }
         const nameRow = document.createElement('div');
         nameRow.className = 'tabItem-nameRow';
-        nameRow.textContent = `${chat.character}: ${chat.file_name}`;
+        fillChatName(nameRow, chat);
         // Pencil icon for renaming chat 
         const pencilIcon = document.createElement('i');
         pencilIcon.className = 'fa-solid fa-pencil-alt chat-rename-icon';
         pencilIcon.style.cursor = 'pointer';
         pencilIcon.style.margin = '0 6px 0 6px';
-        pencilIcon.title = t ? t`Rename chat` : 'Rename chat';
+        pencilIcon.title = t`Rename chat`;
         pencilIcon.addEventListener('click', async (e) => {
             e.stopPropagation();
             // Show rename popup for chat
             const content = document.createElement('div');
-            content.innerHTML = `<h3>${t ? t`Rename chat` : 'Rename chat'}</h3>`;
+            content.innerHTML = `<h3>${t`Rename chat`}</h3>`;
             const nameInput = document.createElement('input');
             nameInput.type = 'text';
             nameInput.value = chat.file_name;
@@ -2148,8 +2177,8 @@ function addTabToCharManagementMenu() {
             nameInput.className = 'chatplus_menu_input';
             content.appendChild(nameInput);
             const popup = new Popup(content, POPUP_TYPE.TEXT, '', {
-                okButton: t ? t`Rename` : 'Rename',
-                cancelButton: t ? t`Cancel` : 'Cancel',
+                okButton: t`Rename`,
+                cancelButton: t`Cancel`,
                 wide: true
             });
             nameInput.addEventListener('keydown', function (e) {
@@ -2179,7 +2208,7 @@ function addTabToCharManagementMenu() {
         // Pin button for pinning the "Currently Selected Chat" chat
         const pinBtn = document.createElement('button');
         pinBtn.className = 'pinBtn tabItem-pinBtn';
-        pinBtn.title = (t ? t`Pin or folder chat` : 'Pin or folder chat');
+        pinBtn.title = t`Pin or folder chat`;
         pinBtn.innerHTML = '<i class="fa-regular fa-bookmark"></i>';
         pinBtn.addEventListener('click', async (e) => {
             e.stopPropagation();
@@ -2332,7 +2361,7 @@ function buildFolderChatList() {
         }
         const group = groupMap.get(charId);
         if (group) {
-            out.push({ character: group.name || `Group ${group.id}`, avatar: group.avatar || '', file_name: fileName, characterId: group.id, isGroup: true, groupMembers: group.members || [], stat: undefined, last_mes: null });
+            out.push({ character: group.name || `그룹 ${group.id}`, avatar: group.avatar || '', file_name: fileName, characterId: group.id, isGroup: true, groupMembers: group.members || [], stat: undefined, last_mes: null });
         }
     }
     out.sort((a, b) => (a.character || '').localeCompare(b.character || '') || (a.file_name || '').localeCompare(b.file_name || ''));
@@ -2363,7 +2392,7 @@ refreshFoldersTab = async function () {
         addFolderRow.className = 'add-folder-row';
         const addFolderBtn = document.createElement('button');
         addFolderBtn.className = 'add-folder-btn';
-        addFolderBtn.title = 'Add Folder';
+        addFolderBtn.title = '새 폴더';
         addFolderBtn.innerHTML = '<i class="fa-solid fa-plus"></i>';
         addFolderBtn.addEventListener('click', async () => {
             // Show a popup with a list of all folders as radio inputs and allow selecting one (or none)
@@ -2449,7 +2478,7 @@ refreshFoldersTab = async function () {
         });
         const addFolderLabel = document.createElement('span');
         addFolderLabel.className = 'add-folder-label';
-        addFolderLabel.textContent = 'Add Folder';
+        addFolderLabel.textContent = '새 폴더';
         addFolderLabel.addEventListener('click', () => addFolderBtn.click());
         addFolderRow.appendChild(addFolderBtn);
         addFolderRow.appendChild(addFolderLabel);
@@ -2461,7 +2490,7 @@ refreshFoldersTab = async function () {
         addFolderRow.appendChild(optionsBtn);
         // Dropping a folder here moves it to the top level
         makeRootDropZone(addFolderRow);
-        addFolderRow.title = '폴더를 여기로 끌어다 놓으면 최상위로 옮겨져요';
+        addFolderRow.title = '폴더를 이 줄에 끌어다 놓으면 최상위로 옮겨져요';
         foldersTabContainer.appendChild(addFolderRow);
         // Folder entries come from saved data + the shared cache: no server scan needed
         const allChats = buildFolderChatList();

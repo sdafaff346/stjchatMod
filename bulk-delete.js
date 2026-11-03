@@ -5,6 +5,7 @@
 import * as stScript from '../../../../script.js';
 import * as stGroups from '../../../group-chats.js';
 import { Popup, POPUP_TYPE, POPUP_RESULT } from '../../../popup.js';
+import { fillChatName, formatFullDateTime } from './ui-helpers.js';
 import { loadChats, forgetChats, markStale } from './chat-store.js';
 
 const RENDER_BATCH = 150; // rows rendered per "show more" click
@@ -135,10 +136,10 @@ async function pickChatsToDelete() {
         info.className = 'chatsplus-bulk-info';
         const name = document.createElement('div');
         name.className = 'chatsplus-bulk-name';
-        name.textContent = `${chat.isGroup ? '👥 ' : ''}${chat.character}: ${chat.file_name}`;
+        fillChatName(name, chat);
         const meta = document.createElement('div');
         meta.className = 'chatsplus-bulk-meta';
-        const parts = [formatDate(chat.last_mes)];
+        const parts = [formatFullDateTime(chat.last_mes)];
         if (chat.stat && chat.stat.chat_items != null) parts.push(`메시지 ${chat.stat.chat_items}개`);
         if (chat.stat && chat.stat.file_size) parts.push(chat.stat.file_size);
         if (locked) parts.push('지금 열린 채팅');

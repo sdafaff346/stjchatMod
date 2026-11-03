@@ -870,3 +870,186 @@
     opacity: 0.4;
     cursor: not-allowed;
 }
+
+/* =========================================================
+   Readability pass (overrides earlier rules)
+   ========================================================= */
+
+/* Tabs: clearer active state */
+.chatsplus-tab {
+    font-size: calc(var(--mainFontSize) * 0.95);
+    padding: 9px 0 8px 0;
+    border-bottom: 2px solid transparent;
+    opacity: 0.6;
+}
+.chatsplus-tab.active {
+    font-weight: 600;
+    border-bottom: 2px solid var(--cp-accent);
+    opacity: 1;
+}
+
+/* List rows: more air, left aligned text */
+.tabItem {
+    padding: 8px 10px;
+    gap: 10px;
+    border-radius: 8px;
+    border-color: color-mix(in srgb, var(--SmartThemeBorderColor) 60%, transparent);
+    line-height: 1.35;
+}
+.tabItem-root {
+    margin: 4px 0;
+}
+.tabItem-previewImg {
+    width: 40px;
+    height: 40px;
+    flex: 0 0 40px;
+    border-radius: 50%;
+}
+.tabItem-singleline .tabItem-previewImg {
+    width: 28px;
+    height: 28px;
+    min-width: 28px;
+    min-height: 28px;
+    max-width: 28px;
+    max-height: 28px;
+    border-radius: 50%;
+}
+.tabItem-nameRow {
+    text-align: left;
+    font-weight: normal;
+}
+
+/* "Character · file name" */
+.cp-name {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    min-width: 0;
+    overflow: hidden;
+}
+.cp-char {
+    flex: 0 1 auto;
+    min-width: 0;
+    max-width: 70%;
+    font-weight: 600;
+    color: var(--cp-text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.cp-file {
+    flex: 1 1 auto;
+    min-width: 0;
+    font-size: 0.85em;
+    color: var(--cp-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.cp-file::before {
+    content: '·';
+    margin-right: 6px;
+    opacity: 0.7;
+}
+
+/* Recent rows: name + time on top, 2-line message preview below */
+.cp-top-row {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    min-width: 0;
+}
+.cp-top-row .tabItem-nameRow {
+    flex: 1 1 auto;
+    min-width: 0;
+    width: auto;
+}
+.cp-time {
+    flex: 0 0 auto;
+    font-size: 0.8em;
+    color: var(--cp-muted);
+    white-space: nowrap;
+}
+.tabItem-bottomRow {
+    align-items: flex-start;
+    margin-top: 2px;
+}
+.tabItem-message {
+    white-space: normal;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    word-break: break-word;
+    line-height: 1.4;
+    font-size: calc(var(--mainFontSize) * 0.88);
+    color: var(--cp-muted);
+    opacity: 1;
+}
+.tabItem-bottomRow .chat-rename-icon,
+.tabItem-bottomRow .tabItem-pinBtn {
+    opacity: 0.55;
+    transition: opacity 0.15s;
+}
+.tabItem:hover .tabItem-bottomRow .chat-rename-icon,
+.tabItem:hover .tabItem-bottomRow .tabItem-pinBtn {
+    opacity: 1;
+}
+
+/* Date headers: small, muted, stay visible while scrolling */
+.allChatsDateSeparator {
+    position: sticky;
+    top: 0;
+    z-index: 4;
+    font-size: calc(var(--mainFontSize) * 0.82);
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: var(--cp-muted);
+    margin: 14px 0 4px 0;
+    padding: 4px 6px;
+    background: var(--cp-surface);
+    backdrop-filter: blur(var(--SmartThemeBlurStrength, 8px));
+    border-bottom: 1px solid var(--cp-divider);
+}
+.allChatsDateSeparator.pinned-section-header {
+    color: var(--cp-text);
+}
+
+/* Folder headers */
+.collapsible-header {
+    padding: 9px 8px;
+    gap: 8px;
+}
+.collapsible-header .folder-title {
+    font-weight: 600;
+    font-size: calc(var(--mainFontSize) * 1);
+}
+.collapsible-content {
+    gap: 3px;
+}
+
+/* Filter box */
+.filter-input,
+.chatplus_menu_input {
+    font-size: calc(var(--mainFontSize) * 0.95);
+    padding: 7px 10px;
+}
+.filter-input::placeholder,
+.chatplus_menu_input::placeholder,
+.chatsplus-bulk-filter::placeholder {
+    color: var(--cp-muted);
+}
+
+/* Popups */
+.chatsplus-bulk-row {
+    padding: 8px 10px;
+}
+.chatsplus-bulk-row .cp-name {
+    font-size: 0.95em;
+}
+.chatsplus-bulk-meta {
+    margin-top: 1px;
+}
+.chatsplus-bulk-preview {
+    margin-top: 2px;
+}
