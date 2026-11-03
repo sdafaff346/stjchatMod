@@ -1053,3 +1053,152 @@
 .chatsplus-bulk-preview {
     margin-top: 2px;
 }
+
+
+/* =========================================================
+   Avatars: always a true circle (fixes stretched ovals)
+   Size is set once per context through --cp-avatar.
+   ========================================================= */
+.tabItem,
+.chatsplus-bulk-row {
+    --cp-avatar: 40px;
+}
+.tabItem-singleline {
+    --cp-avatar: 30px;
+}
+.chatsplus-bulk-row {
+    --cp-avatar: 36px;
+}
+.tabItem .tabItem-previewImg,
+.tabItem-singleline .tabItem-previewImg,
+.chatsplus-bulk-row .tabItem-previewImg {
+    box-sizing: border-box;
+    width: var(--cp-avatar) !important;
+    height: var(--cp-avatar) !important;
+    min-width: var(--cp-avatar) !important;
+    min-height: var(--cp-avatar) !important;
+    max-width: var(--cp-avatar) !important;
+    max-height: var(--cp-avatar) !important;
+    flex: 0 0 var(--cp-avatar) !important;
+    aspect-ratio: 1 / 1;
+    border-radius: 50% !important;
+    object-fit: cover;
+    object-position: center top;
+    overflow: hidden;
+    padding: 0;
+    margin: 0;
+    align-self: center;
+}
+.tabItem-root:not(.tabItem-singleline) .tabItem-previewImg {
+    align-self: flex-start;
+    margin-top: 2px;
+}
+/* Group avatars (a collage block) are clipped into the same circle */
+.tabItem-previewImg.group-preview {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--cp-hover);
+}
+.tabItem-previewImg.group-preview > * {
+    width: 100% !important;
+    height: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    border-radius: 0 !important;
+    margin: 0 !important;
+}
+.tabItem-previewImg.group-preview img {
+    object-fit: cover;
+}
+
+/* =========================================================
+   Blue Lemonade compatibility
+   When Blue Lemonade is active (body.salty) use its own design tokens,
+   so ChatsPlus matches its colors, rounding, shadows and type scale.
+   Falls back to SillyTavern theme values if a token is missing.
+   ========================================================= */
+body.salty {
+    --cp-text: var(--salty-text, var(--SmartThemeBodyColor));
+    --cp-muted: var(--salty-muted, color-mix(in srgb, var(--SmartThemeBodyColor) 60%, transparent));
+    --cp-border: var(--salty-line, var(--SmartThemeBorderColor));
+    --cp-surface: var(--salty-surface, var(--SmartThemeBlurTintColor));
+    --cp-input-bg: var(--salty-field, var(--black30a));
+    --cp-hover: var(--salty-shade, color-mix(in srgb, var(--salty-text, var(--SmartThemeBodyColor)) 6%, transparent));
+    --cp-divider: var(--salty-line, color-mix(in srgb, var(--SmartThemeBodyColor) 20%, transparent));
+    --cp-accent: var(--salty-accent, var(--SmartThemeQuoteColor));
+    --cp-accent-soft: var(--salty-accent-13, color-mix(in srgb, var(--salty-accent, var(--SmartThemeQuoteColor)) 15%, transparent));
+    --cp-accent-line: var(--salty-accent-40, color-mix(in srgb, var(--salty-accent, var(--SmartThemeQuoteColor)) 45%, transparent));
+    --cp-danger: var(--salty-danger, var(--warning));
+    --cp-danger-soft: var(--salty-danger-soft, color-mix(in srgb, var(--warning) 15%, transparent));
+    --cp-danger-line: color-mix(in srgb, var(--salty-danger, var(--warning)) 50%, transparent);
+    --cp-shadow: transparent;
+}
+body.salty .tabItem {
+    border-radius: var(--bl-r-sm, 8px);
+    background: var(--salty-card, transparent);
+}
+@media (hover: hover) {
+    body.salty .tabItem:hover {
+        background: var(--cp-hover);
+    }
+}
+body.salty .tabItem.pinned {
+    background: var(--salty-accent-8, var(--cp-hover));
+}
+body.salty .cp-char,
+body.salty .tabItem-nameRow {
+    font-size: var(--bl-fs-body, inherit);
+}
+body.salty .cp-file,
+body.salty .cp-time,
+body.salty .chatsplus-folder-count,
+body.salty .chatsplus-muted-note {
+    font-size: var(--bl-fs-micro, 0.8em);
+}
+body.salty .tabItem-message,
+body.salty .chatsplus-bulk-preview,
+body.salty .chatsplus-bulk-meta {
+    font-size: var(--bl-fs-sub, 0.88em);
+}
+body.salty .allChatsDateSeparator {
+    font-size: var(--bl-fs-cap, 0.82em);
+    backdrop-filter: none;
+    background: var(--salty-bg, var(--cp-surface));
+}
+body.salty .collapsible-header .folder-title {
+    font-size: var(--bl-fs-body, inherit);
+}
+body.salty .chatsplus-tab {
+    font-size: var(--bl-fs-ctl, 0.95em);
+}
+body.salty .chatsplus-action-btn {
+    height: var(--bl-h-icon, 34px);
+    width: var(--bl-h-icon, 34px);
+    border-radius: var(--bl-r-sm, 8px);
+    background: var(--salty-control, var(--cp-surface));
+    box-shadow: var(--salty-e2, none);
+}
+body.salty .filter-input,
+body.salty .chatplus_menu_input,
+body.salty .chatsplus-bulk-filter {
+    min-height: var(--bl-h-ctl, 36px);
+    border-radius: var(--bl-r-sm, 8px);
+    background: var(--cp-input-bg);
+    border-color: var(--cp-border);
+    color: var(--cp-text);
+}
+body.salty .chatsplus-bulk-list,
+body.salty .chatsplus-folder-radios {
+    border-radius: var(--bl-r-md, 12px);
+}
+body.salty .chatsplus-bulk-row,
+body.salty .chatsplus-radio-row,
+body.salty .chatsplus-menu-item,
+body.salty .chatsplus-color-swatch {
+    border-radius: var(--bl-r-sm, 8px);
+}
+body.salty .collapsible-section {
+    border-radius: var(--bl-r-md, 12px);
+    box-shadow: none;
+}

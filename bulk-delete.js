@@ -51,8 +51,6 @@ function makeAvatar(chat) {
         el.src = typeof getThumbnailUrl === 'function' ? getThumbnailUrl('avatar', chat.avatar) : (chat.avatar || '');
         el.alt = chat.character || '';
     }
-    el.style.width = '32px';
-    el.style.height = '32px';
     return el;
 }
 

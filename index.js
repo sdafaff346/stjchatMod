@@ -1169,8 +1169,6 @@ function renderAllChatsFoldersUI(container, folderedChats, folderNodes, level = 
                     previewImg.src = typeof getThumbnailUrl === 'function' ? getThumbnailUrl('avatar', chat.avatar) : (chat.avatar || '');
                     previewImg.alt = chat.character || '';
                 }
-                previewImg.style.width = '32px';
-                previewImg.style.height = '32px';
 
                 // Chat info
                 const chatInfo = document.createElement('div');
@@ -1475,8 +1473,6 @@ function renderAllChatsTabItem(chat, container, isPinned, folderId) {
         previewImg.className = 'tabItem-previewImg';
         previewImg.src = typeof getThumbnailUrl === 'function' ? getThumbnailUrl('avatar', chat.avatar) : (chat.avatar || '');
         previewImg.alt = chat.character || '';
-        previewImg.style.width = '32px';
-        previewImg.style.height = '32px';
     }
 
     // Pencil icon for renaming chat
