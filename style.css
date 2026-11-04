@@ -1202,3 +1202,25 @@ body.salty .collapsible-section {
     border-radius: var(--bl-r-md, 12px);
     box-shadow: none;
 }
+
+/* Blue Lemonade: it pads/sizes the character list with
+   "#right-nav-panel > .scrollableInner". ChatsPlus moves that list into
+   #chatsplus-characters-tab, so give it the same values here. */
+body.salty #right-nav-panel:not(#salty-none) #chatsplus-characters-tab > .scrollableInner {
+    padding-left: max(0px, calc(var(--bl-gutter, 14px) - var(--bl-sbw, 0px))) !important;
+    padding-right: max(0px, calc(var(--bl-gutter, 14px) - var(--bl-sbw, 0px))) !important;
+}
+@media (max-width: 1000px) {
+    body.salty #right-nav-panel:not(#salty-none) #chatsplus-characters-tab > .scrollableInner {
+        width: 100% !important;
+        max-width: none !important;
+        padding-left: 6px !important;
+        padding-right: 6px !important;
+    }
+}
+/* Keep delete buttons red even when a theme restyles .menu_button */
+.menu_button.chatsplus-menu-danger,
+body.salty .menu_button.chatsplus-menu-danger,
+body.salty .menu_button.chatsplus-menu-danger > i {
+    color: var(--cp-danger) !important;
+}

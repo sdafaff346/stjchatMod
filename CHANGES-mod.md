@@ -47,3 +47,7 @@
 - 프사가 찌그러지던 문제 수정: 원본 코드가 프사에 32px 크기를 직접 박아두고 있었는데, CSS에서 키운 크기와 섞이면서 가로만 늘어났어요. 박힌 크기를 없애고 가로·세로·비율을 한 값(`--cp-avatar`)으로 묶어 늘 정원이 되게 했어요. 가로로 긴 그림을 넣어도 원으로 잘려요. 그룹 프사도 같은 원 안에 들어가요.
 - Blue Lemonade 테마가 켜져 있으면(`body.salty`) 그 확장의 색(`--salty-text`, `--salty-accent`, `--salty-line`, `--salty-field` 등), 둥글기, 그림자, 글자 크기 단계를 그대로 따라가요. 꺼져 있으면 실리태번 기본 테마 색을 써요.
 - Blue Lemonade와 클래스 이름이 겹치는 곳은 없어서 서로 모양을 덮어쓰지 않아요.
+
+## Blue Lemonade 충돌 수정
+- Blue Lemonade는 캐릭터 목록 여백을 "오른쪽 서랍 바로 아래 목록"에만 줘요. ChatsPlus가 목록을 자기 탭 안으로 옮기면서 여백이 0이 되던 문제(원본 ChatsPlus도 같음)를 고쳤어요. 이제 ChatsPlus가 없을 때와 같은 여백(PC 16px · 폰 6px)이에요.
+- Blue Lemonade 버튼 색이 ChatsPlus 삭제 버튼의 빨간색을 덮던 것을 고쳤어요.
